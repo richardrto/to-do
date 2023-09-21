@@ -94,7 +94,7 @@ const todoController = (() => {
 
     function createTodo(counter) {
         const todo = objects.todo(counter);
-        currentSelectedProject.todoList.push(todo);
+        currentSelectedProject.todoList.unshift(todo);
 
         // Create todo div and append to the todos list on the page
         const todoDiv = view.todoDiv(counter);
@@ -108,16 +108,14 @@ const todoController = (() => {
         // Add eventListener for when user clicks on the todo div in list on page
         todoDiv.div.addEventListener('focus', () => {
             todoDiv.div.classList.add('focus');
-
             if (currentSelectedTodoDiv && currentSelectedTodoDiv != todoDiv.div) {
                 currentSelectedTodoDiv.classList.remove('focus');
                 currentSelectedTodoDiv.blur();
             }
-
             // Make this newly focused div the currently selected div
             currentSelectedTodoDiv = todoDiv.div;
         });
-            
+
         // // Edit a todo's title
         // todoDiv.editBtn.addEventListener('click', () => {
         //     let userInput = prompt('Edit title:', todoDiv.titleLabel.textContent);
