@@ -6,11 +6,11 @@ module.exports = {
     entry: './src/index.js',
     devtool: 'eval-source-map',
     devServer: {
-        static: './dist',
+        static: './src',
       },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'To Do',
+            template: './src/index.html',
         })
     ],
     output: {
@@ -26,6 +26,16 @@ module.exports = {
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource',
+                use: [
+                    {
+                      loader: 'url-loader',
+                      options: {
+                        limit: 8000,
+                        name: './src/images/[hash]-[name].[ext]',
+                        publicPath: 'assets',
+                      }
+                    }
+                ]
             },
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/i,

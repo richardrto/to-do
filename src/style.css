@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 2fr 3fr;
+}
+
+img {
+    height: 1rem;
+}
+
+.list {
+    overflow: scroll;
+}
+
+.list-top {
+    display: flex;
+    justify-content: center;
+}
+
+.add {
+    margin: 0.5rem;
+    width: 90%;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem;
+    border: 1px solid rgb(97, 109, 119);
+    border-radius: 0.2rem;
+    background-color: rgb(191, 226, 251);
+    color: black;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.3rem;
+}
+
+.project.focus {
+    background-color: rgb(115, 156, 185);
+    outline: 0;
+}
+
+.todo.focus {
+    background-color: rgb(119, 163, 194);
+}
+
+span {
+    font-size: 1rem;
+    overflow: hidden;
+}
+
+.buttons {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.projects {
+    background-color: rgb(193, 226, 247);
+}
+
+.project {
+    background-color: rgb(155, 194, 222);
+}
+
+.todos {
+    background-color: rgb(200, 230, 252);
+}
+
+.todo {
+    background-color: rgb(153, 201, 236);
+}
+
+.main {
+    padding: 1rem;
+    background-color: rgb(206, 236, 255);;
+}
