@@ -2,14 +2,19 @@ const objects = (() => {
     const projectList = [];
     const project = (counter) => {
         const id = counter;
-        const todoList = [];
+        let todoCounter = 0;
         let title = 'Untitled Project';
-        return {id, todoList, title};
+        const todoList = [];
+        return {id, title, todoList, todoCounter};
     };
 
-    const todo = () => {
+    const todo = (counter, div) => {
+        const id = counter;
         let title = 'Untitled Todo';
-        return {title, description, dueDate, priority}
+        let description;
+        let dueDate;
+        let priority;
+        return {id, title, description, dueDate, priority, div}
     }
     return {projectList, project, todo};
 })();

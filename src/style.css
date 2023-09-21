@@ -21,6 +21,7 @@ img {
 }
 
 .list-top {
+    position: sticky;
     display: flex;
     justify-content: center;
 }

@@ -3,10 +3,9 @@ import {objects} from './objects.js';
 
 const todoController = (() => {
     let projectCounter = 0;
-    let todoCounter = 0;
-    let currentSelectedTodo;
     let currentSelectedProject;
-    let currentSelectedDiv;
+    let currentSelectedProjectDiv;
+    let currentSelectedTodoDiv;
     const projectList = objects.projectList;
 
     // First project to be created on page load
@@ -14,10 +13,9 @@ const todoController = (() => {
 
     // Create new projects on each button click
     view.UI.addProjectBtn.addEventListener('click', () => {createProject(projectCounter)});
-    view.UI.addTodoBtn.addEventListener('click', () => {createTodo(todoCounter)});
+    view.UI.addTodoBtn.addEventListener('click', () => {createTodo(currentSelectedProject.todoCounter)});
 
     function createProject(counter) {
-        // Create project object
         const project = objects.project(counter);
         currentSelectedProject = project;
         projectList.push(project);
@@ -37,25 +35,26 @@ const todoController = (() => {
 
             // If there is a previously selected div (either from having just created one or user
             // has clicked on one, remove focus on the previously selected div and buttons)
-            // Sometimes the div can lose focus but remain the currentSelectedDiv, so user will be
+            // Sometimes the div can lose focus but remain the currentSelectedProjectDiv, so user will be
             // able to trigger another focus event by clicking on it, removing buttons the first
             // time. When another div is selected, the previous div will still be the
-            // currentSelectedDiv, throwing an error when there are no more buttons to remove.
+            // currentSelectedProjectDiv, throwing an error when there are no more buttons to remove.
             // So, buttons will not be removed if a div loses focus and is "focused" again.
-            if (currentSelectedDiv && currentSelectedDiv != projectDiv.div) {
-                currentSelectedDiv.classList.remove('focus');
-                currentSelectedDiv.querySelector('.buttons').remove();
-                currentSelectedDiv.blur();
+            if (currentSelectedProjectDiv && currentSelectedProjectDiv != projectDiv.div) {
+                currentSelectedProjectDiv.classList.remove('focus');
+                currentSelectedProjectDiv.querySelector('.buttons').remove();
+                currentSelectedProjectDiv.blur();
             }
 
             // Make this newly focused div the currently selected div
-            currentSelectedDiv = projectDiv.div;
+            currentSelectedProjectDiv = projectDiv.div;
 
             // Assign currentSelectedProject according to which div was just selected. This will be
             // where the todos panel's list of todos will be coming from.
-            currentSelectedProject = projectList[parseInt(projectDiv.div.dataset.id)];
+            view.UI.todosDiv.innerHTML = '';
+            currentSelectedProject = projectList[parseInt(currentSelectedProjectDiv.dataset.id)];
             currentSelectedProject.todoList.forEach(todo => {
-                todoListDiv.appendChild(todo.div);
+                view.UI.todosDiv.appendChild(todo.div);
             });
         });
             
@@ -66,12 +65,12 @@ const todoController = (() => {
             if (userInput != null && userInput != undefined && userInput != '') {
                 projectList[parseInt(projectDiv.div.dataset.id)].title = userInput;
                 projectDiv.titleLabel.textContent = userInput;
-                // Set currentSelectedDiv to undefined, as the line above which removes buttons
-                // will throw an error when currentSelectedDiv still exists but has lost focus
+                // Set currentSelectedProjectDiv to undefined, as the line above which removes buttons
+                // will throw an error when currentSelectedProjectDiv still exists but has lost focus
                 // due to prompt opening, meaning there will no longer be buttons to remove.
-                currentSelectedDiv = undefined;
+                currentSelectedProjectDiv = undefined;
             } else {
-                currentSelectedDiv = undefined;
+                currentSelectedProjectDiv = undefined;
             };
         });
     
@@ -79,17 +78,76 @@ const todoController = (() => {
         projectDiv.removeBtn.addEventListener('click', () => {
             const deleteProject = confirm('Are you sure you want to delete this project? Doing so will also delete any associated todos.');
             if (deleteProject) {
+                currentSelectedProject.todoList.length = 0;
                 view.UI.projectsDiv.removeChild(projectDiv.div);
-                view.UI.todosListDiv.innerHTML = '';
             };
-            // Set currentSelectedDiv to undefined, as the line above which removes buttons
-            // will throw an error when currentSelectedDiv still exists but has lost focus
+            // Set currentSelectedProjectDiv to undefined, as the line above which removes buttons
+            // will throw an error when currentSelectedProjectDiv still exists but has lost focus
             // due to confirmation prompt opening, meaning there will no longer be buttons to
             // remove.
-            currentSelectedDiv = undefined;
+            currentSelectedProjectDiv = undefined;
         });
 
         projectDiv.div.focus();
         return {project, projectDiv};
+    }
+
+    function createTodo(counter) {
+        const todo = objects.todo(counter);
+        currentSelectedProject.todoList.push(todo);
+
+        // Create todo div and append to the todos list on the page
+        const todoDiv = view.todoDiv(counter);
+        todoDiv.titleLabel.textContent = todo.title;
+        view.UI.todosDiv.insertBefore(todoDiv.div, view.UI.todosDiv.firstChild);
+        todo.div = todoDiv.div;
+        
+        // Increment todoCounter to use as ID for next todo to be created
+        currentSelectedProject.todoCounter++;
+
+        // Add eventListener for when user clicks on the todo div in list on page
+        todoDiv.div.addEventListener('focus', () => {
+            todoDiv.div.classList.add('focus');
+
+            if (currentSelectedTodoDiv && currentSelectedTodoDiv != todoDiv.div) {
+                currentSelectedTodoDiv.classList.remove('focus');
+                currentSelectedTodoDiv.blur();
+            }
+
+            // Make this newly focused div the currently selected div
+            currentSelectedTodoDiv = todoDiv.div;
+        });
+            
+        // // Edit a todo's title
+        // todoDiv.editBtn.addEventListener('click', () => {
+        //     let userInput = prompt('Edit title:', todoDiv.titleLabel.textContent);
+    
+        //     if (userInput != null && userInput != undefined && userInput != '') {
+        //         todoList[parseInt(todoDiv.div.dataset.id)].title = userInput;
+        //         todoDiv.titleLabel.textContent = userInput;
+        //         // Set currentSelectedTodoDiv to undefined, as the line above which removes buttons
+        //         // will throw an error when currentSelectedTodoDiv still exists but has lost focus
+        //         // due to prompt opening, meaning there will no longer be buttons to remove.
+        //         currentSelectedTodoDiv = undefined;
+        //     } else {
+        //         currentSelectedTodoDiv = undefined;
+        //     };
+        // });
+    
+        // // Delete a todo
+        // todoDiv.removeBtn.addEventListener('click', () => {
+        //     const deleteTodo = confirm('Are you sure you want to delete this todo? Doing so will also delete any associated todos.');
+        //     if (deleteTodo) {
+        //         view.UI.todosDiv.removeChild(todoDiv.div);
+        //         view.UI.todosListDiv.innerHTML = '';
+        //     };
+        //     // Set currentSelectedTodoDiv to undefined, as the line above which removes buttons
+        //     // will throw an error when currentSelectedTodoDiv still exists but has lost focus
+        //     // due to confirmation prompt opening, meaning there will no longer be buttons to
+        //     // remove.
+        //     currentSelectedTodoDiv = undefined;
+        // });
+        todoDiv.div.focus();
+        return {todo, todoDiv};
     }
 })();

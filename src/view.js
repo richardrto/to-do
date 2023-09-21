@@ -3,8 +3,8 @@ const view = (() => {
         const addProjectBtn = document.querySelector('.addProject');
         const addTodoBtn = document.querySelector('.addTodo');
         const projectsDiv = document.querySelector('.projectsList');
-        const todosListDiv = document.querySelector('.todosList');
-        return {addProjectBtn, addTodoBtn, projectsDiv, todosListDiv};
+        const todosDiv = document.querySelector('.todosList');
+        return {addProjectBtn, addTodoBtn, projectsDiv, todosDiv};
     })();
 
     const projectDiv = (counter) => {
@@ -32,33 +32,19 @@ const view = (() => {
         return {div, titleLabel, editBtn, removeBtn, buttons};
     };
 
-    // const todoDiv = (todoObj) => {
-    //     const todoDiv = document.createElement('div');
-    //     todoDiv.tabIndex = '0';
+    const todoDiv = (counter) => {
+        const div = document.createElement('div');
+        div.classList = 'item todo';
+        div.dataset.id = `${counter}`;
+        div.tabIndex = '0';
 
-    //     const title = document.createElement('span');
-    //     title.textContent = todoObj.title;
-    //     todoDiv.appendChild(title);
+        const titleLabel = document.createElement('span');
+        div.appendChild(titleLabel);
 
-    //     const removeBtn = document.createElement('img');
-    //     removeBtn.src = './images/remove.svg';
+        return {div, titleLabel};
+    };
 
-    //     const editBtn = document.createElement('img');
-    //     editBtn.src = './images/edit.svg';
-
-    //     const buttons = document.createElement('div');
-    //     buttons.classList.add('buttons');
-    //     buttons.appendChild(editBtn);
-    //     buttons.appendChild(removeBtn);
-
-    //     // Selecting a project and populating the todos list with the project's todos
-    //     todoDiv.addEventListener('click', () => {
-    //         currentSelectedTodo = todoObj;
-    //         todoDiv.classList.add('focus');
-    //     });
-    //     return {todoDiv, todoObj};
-    // };
-    return {UI, projectDiv}
+    return {UI, projectDiv, todoDiv}
 })();
 
 export {view};
