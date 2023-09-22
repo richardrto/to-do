@@ -47,6 +47,11 @@ img {
     padding: 0.3rem;
 }
 
+.item.todo {
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
 .project.focus {
     background-color: rgb(115, 156, 185);
     outline: 0;
@@ -84,5 +89,8 @@ span {
 
 .main {
     padding: 1rem;
-    background-color: rgb(206, 236, 255);;
+    background-color: rgb(206, 236, 255);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }

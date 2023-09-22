@@ -3,8 +3,9 @@ const view = (() => {
         const addProjectBtn = document.querySelector('.addProject');
         const addTodoBtn = document.querySelector('.addTodo');
         const projectsDiv = document.querySelector('.projectsList');
-        const todosDiv = document.querySelector('.todosList');
-        return {addProjectBtn, addTodoBtn, projectsDiv, todosDiv};
+        const todoListDiv = document.querySelector('.todosList');
+        const title = document.querySelector('.title');
+        return {addProjectBtn, addTodoBtn, projectsDiv, todoListDiv, title};
     })();
 
     const projectDiv = (counter) => {
@@ -34,6 +35,9 @@ const view = (() => {
 
     const todoDiv = (counter) => {
         const div = document.createElement('div');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        div.appendChild(checkbox);
         div.classList = 'item todo';
         div.dataset.id = `${counter}`;
         div.tabIndex = '0';
@@ -41,7 +45,7 @@ const view = (() => {
         const titleLabel = document.createElement('span');
         div.appendChild(titleLabel);
 
-        return {div, titleLabel};
+        return {div, titleLabel, checkbox};
     };
 
     return {UI, projectDiv, todoDiv}

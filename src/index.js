@@ -3,21 +3,28 @@ import {objects} from './objects.js';
 
 const todoController = (() => {
     let projectCounter = 0;
+
     let currentSelectedProject;
     let currentSelectedProjectDiv;
+
+    let currentSelectedTodo;
     let currentSelectedTodoDiv;
+    let currentTodoList;
+
+    const todoListDiv = view.UI.todoListDiv;
     const projectList = objects.projectList;
 
     // First project to be created on page load
     createProject(projectCounter);
 
-    // Create new projects on each button click
+    // Create new projects/todos on each button click
     view.UI.addProjectBtn.addEventListener('click', () => {createProject(projectCounter)});
     view.UI.addTodoBtn.addEventListener('click', () => {createTodo(currentSelectedProject.todoCounter)});
 
     function createProject(counter) {
         const project = objects.project(counter);
         currentSelectedProject = project;
+        currentTodoList = project.todoList;
         projectList.push(project);
         
         // Create project div and append to the projects list on the page
@@ -28,7 +35,7 @@ const todoController = (() => {
         // Increment projectCounter to use as ID for next project to be created
         projectCounter++;
 
-        // Add eventListener for when user clicks on the project div in list on page
+        // Handles all events when the specific project div is focused
         projectDiv.div.addEventListener('focus', () => {
             projectDiv.div.classList.add('focus');
             projectDiv.div.appendChild(projectDiv.buttons);
@@ -48,13 +55,14 @@ const todoController = (() => {
 
             // Make this newly focused div the currently selected div
             currentSelectedProjectDiv = projectDiv.div;
-
             // Assign currentSelectedProject according to which div was just selected. This will be
             // where the todos panel's list of todos will be coming from.
-            view.UI.todosDiv.innerHTML = '';
             currentSelectedProject = projectList[parseInt(currentSelectedProjectDiv.dataset.id)];
-            currentSelectedProject.todoList.forEach(todo => {
-                view.UI.todosDiv.appendChild(todo.div);
+
+            todoListDiv.textContent = '';
+            currentTodoList = currentSelectedProject.todoList;
+            currentTodoList.forEach(todo => {
+                todoListDiv.appendChild(todo.div);
             });
         });
             
@@ -99,7 +107,7 @@ const todoController = (() => {
         // Create todo div and append to the todos list on the page
         const todoDiv = view.todoDiv(counter);
         todoDiv.titleLabel.textContent = todo.title;
-        view.UI.todosDiv.insertBefore(todoDiv.div, view.UI.todosDiv.firstChild);
+        todoListDiv.insertBefore(todoDiv.div, todoListDiv.firstChild);
         todo.div = todoDiv.div;
         
         // Increment todoCounter to use as ID for next todo to be created
@@ -114,7 +122,28 @@ const todoController = (() => {
             }
             // Make this newly focused div the currently selected div
             currentSelectedTodoDiv = todoDiv.div;
+
+            currentSelectedTodo = Array.prototype.find.call(currentTodoList, todo => todo.div.dataset.id == currentSelectedTodoDiv.dataset.id);
+            view.UI.title.textContent = currentSelectedTodo.title;
         });
+
+        todoDiv.checkbox.addEventListener('change', () => {
+            if (todoDiv.checkbox.checked) {
+                currentTodoList.push(currentSelectedProject.todoList.splice(Array.prototype.indexOf.call(todoListDiv.childNodes, todoDiv.div), 1)[0]);
+                todoListDiv.textContent = '';
+                currentTodoList.forEach(todo => {
+                    todoListDiv.appendChild(todo.div);
+                });
+                todoDiv.div.style.textDecoration = 'line-through';
+            } else {
+                todoDiv.div.style.textDecoration = 'none';
+                // todoListDiv.insertBefore(todoDiv.div, todoListDiv.firstChild);
+                currentTodoList.unshift(currentTodoList.splice(Array.prototype.indexOf.call(todoListDiv.childNodes, todoDiv.div), 1)[0]);
+                currentSelectedProject.todoList.forEach(todo => {
+                    todoListDiv.appendChild(todo.div);
+                });
+            }
+        })
 
         // // Edit a todo's title
         // todoDiv.editBtn.addEventListener('click', () => {
@@ -136,7 +165,7 @@ const todoController = (() => {
         // todoDiv.removeBtn.addEventListener('click', () => {
         //     const deleteTodo = confirm('Are you sure you want to delete this todo? Doing so will also delete any associated todos.');
         //     if (deleteTodo) {
-        //         view.UI.todosDiv.removeChild(todoDiv.div);
+        //         todoListDiv.removeChild(todoDiv.div);
         //         view.UI.todosListDiv.innerHTML = '';
         //     };
         //     // Set currentSelectedTodoDiv to undefined, as the line above which removes buttons
@@ -147,5 +176,5 @@ const todoController = (() => {
         // });
         todoDiv.div.focus();
         return {todo, todoDiv};
-    }
+    };
 })();

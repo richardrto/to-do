@@ -11,9 +11,10 @@ const objects = (() => {
     const todo = (counter, div) => {
         const id = counter;
         let title = 'Untitled Todo';
-        let description;
+        let description = '';
         let dueDate;
         let priority;
+        let completeStatus;
         return {id, title, description, dueDate, priority, div}
     }
     return {projectList, project, todo};
